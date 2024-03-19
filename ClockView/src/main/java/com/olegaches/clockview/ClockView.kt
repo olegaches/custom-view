@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.content.res.getDimensionPixelSizeOrThrow
 import java.util.Calendar
 import kotlin.math.cos
 import kotlin.math.min
@@ -81,27 +80,31 @@ class ClockView @JvmOverloads constructor(
     private var mRect = Rect()
     private var mNumbers = intArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
     private var mFontSize: Float = 80f
-    private var hourRotation = 0f
-    private var minuteRotation = 0f
-    private var secondRotation = 0f
 
     init {
-        if(attrs != null && context != null) {
+        if (attrs != null && context != null) {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ClockView)
             val defaultColor = DEFAULT_COLOR
-            hourPaint.color = typedArray.getColor(R.styleable.ClockView_hourArrowColor, defaultColor)
-            minutePaint.color = typedArray.getColor(R.styleable.ClockView_minuteArrowColor, defaultColor)
-            secondPaint.color = typedArray.getColor(R.styleable.ClockView_secondArrowColor, defaultColor)
+            hourPaint.color =
+                typedArray.getColor(R.styleable.ClockView_hourArrowColor, defaultColor)
+            minutePaint.color =
+                typedArray.getColor(R.styleable.ClockView_minuteArrowColor, defaultColor)
+            secondPaint.color =
+                typedArray.getColor(R.styleable.ClockView_secondArrowColor, defaultColor)
             val primaryColor = typedArray.getColor(R.styleable.ClockView_primaryColor, defaultColor)
             dividerPaint.color = primaryColor
             numberPaint.color = primaryColor
             val circlePaint = circlePaint
             circlePaint.color = primaryColor
-            circlePaint.strokeWidth = typedArray.getDimension(R.styleable.ClockView_circleWidth, CIRCLE_STROKE_WIDTH)
+            circlePaint.strokeWidth =
+                typedArray.getDimension(R.styleable.ClockView_circleWidth, CIRCLE_STROKE_WIDTH)
             val defaultArrowLength = DEFAULT_ARROW_LENGTH
-            hourLength = typedArray.getDimension(R.styleable.ClockView_hourArrowLength, defaultArrowLength)
-            minuteLength = typedArray.getDimension(R.styleable.ClockView_minuteArrowLength, defaultArrowLength)
-            secondLength = typedArray.getDimension(R.styleable.ClockView_secondArrowLength, defaultArrowLength)
+            hourLength =
+                typedArray.getDimension(R.styleable.ClockView_hourArrowLength, defaultArrowLength)
+            minuteLength =
+                typedArray.getDimension(R.styleable.ClockView_minuteArrowLength, defaultArrowLength)
+            secondLength =
+                typedArray.getDimension(R.styleable.ClockView_secondArrowLength, defaultArrowLength)
             mFontSize = typedArray.getDimension(R.styleable.ClockView_fontSize, mFontSize)
             typedArray.recycle()
         }
@@ -130,31 +133,42 @@ class ClockView @JvmOverloads constructor(
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
 
-        hourRotation = (hour % 12 + minute / 60f) * 360 / 12
-        minuteRotation = (minute + second / 60f) * 360 / 60
-        secondRotation = second * 360f / 60
-
+        val hourAngle = (hour % 12 + minute / 60f) * 360 / 12
+        val minuteAngle = (minute + second / 60f) * 360 / 60
+        val secondAngle = second * 360f / 60
         val (centerX, centerY, radius) = listOf(mCentreX, mCentreY, mRadius)
 
+        drawArrow(canvas, centerX, centerY, hourLength, hourAngle, hourPaint)
+        drawArrow(canvas, centerX, centerY, minuteLength, minuteAngle, minutePaint)
+        drawArrow(canvas, centerX, centerY, secondLength, secondAngle, secondPaint)
         drawCircle(canvas, centerX, centerY, radius, circlePaint)
-        drawArrow(canvas, centerX, centerY, hourLength, hourRotation, hourPaint)
-        drawArrow(canvas, centerX, centerY, minuteLength, minuteRotation, minutePaint)
-        drawArrow(canvas, centerX, centerY, secondLength, secondRotation, secondPaint)
         drawCenterDot(canvas, centerX, centerY, 10f, dividerPaint)
-        drawNumerals(canvas, centerX, centerY, radius - 120, mFontSize, numberPaint, mRect, mNumbers)
+        drawNumerals(
+            canvas,
+            centerX,
+            centerY,
+            radius - 120,
+            mFontSize,
+            numberPaint,
+            mRect,
+            mNumbers
+        )
         drawDividers(canvas, centerX, centerY, radius - 40, dividerPaint)
         postInvalidateDelayed(250)
     }
 
-    private fun drawArrow(canvas: Canvas, x: Int, y: Int, length: Float, rotation: Float, paint: Paint) {
-        val offset = length / 4
-
-        val startX = x - offset * cos(Math.toRadians(rotation.toDouble())).toFloat()
-        val startY = y - offset * sin(Math.toRadians(rotation.toDouble())).toFloat()
-
-        val endX = x + length * cos(Math.toRadians(rotation.toDouble())).toFloat()
-        val endY = y + length * sin(Math.toRadians(rotation.toDouble())).toFloat()
-
+    private fun drawArrow(
+        canvas: Canvas,
+        x: Int,
+        y: Int,
+        length: Float,
+        angle: Float,
+        paint: Paint
+    ) {
+        val startX = x - length / 4 * sin(Math.toRadians(angle.toDouble())).toFloat()
+        val startY = y + length / 4 * cos(Math.toRadians(angle.toDouble())).toFloat()
+        val endX = x + length * sin(Math.toRadians(angle.toDouble())).toFloat()
+        val endY = y - length * cos(Math.toRadians(angle.toDouble())).toFloat()
         canvas.drawLine(startX, startY, endX, endY, paint)
     }
 
