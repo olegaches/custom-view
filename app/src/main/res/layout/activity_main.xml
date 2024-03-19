@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.olegaches.clockview.ClockView
+            android:layout_width="match_parent"
+            android:layout_height="339dp"
+            app:hourArrowColor="@color/black"
+            app:hourArrowLength="50dp"
+            app:minuteArrowColor="@color/gray"
+            app:minuteArrowLength="65dp"
+            app:primaryColor="@color/black"
+            app:secondArrowColor="@color/red"
+            app:secondArrowLength="90dp" />
+
+        <com.olegaches.clockview.ClockView
+            android:layout_width="match_parent"
+            android:layout_height="252dp"
+            app:fontSize="12sp"
+            app:circleWidth="20dp"
+            app:hourArrowColor="@color/red"
+            app:hourArrowLength="50dp"
+            app:minuteArrowColor="@color/red"
+            app:minuteArrowLength="50dp"
+            app:primaryColor="@color/gray"
+            app:secondArrowColor="@color/red"
+            app:secondArrowLength="50dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:text="abc"
+            />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
